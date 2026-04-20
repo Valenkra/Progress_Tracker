@@ -76,8 +76,8 @@ header p {
     background: linear-gradient(90deg, #c084fc, #ec4899);
     color: white;
     border: none;
-    padding: 18px 42px;
-    font-size: 1.4rem;
+    padding: 11px 28px;
+    font-size: 1rem;
     font-weight: 600;
     border-radius: 9999px;
     cursor: pointer;
@@ -94,7 +94,7 @@ header p {
 }
 
 .plus {
-    font-size: 1.8rem;
+    font-size: 1.2rem;
     line-height: 1;
 }
 
@@ -245,8 +245,8 @@ header p {
     background: #c084fc;
     color: white;
     border: none;
-    padding: 12px 24px;
-    border-radius: 16px;
+    padding: 8px 16px;
+    border-radius: 12px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s;
@@ -273,17 +273,17 @@ header p {
     background: white;
     color: #6b21a8;
     border: 2px solid #e0c4f7;
-    padding: 14px 30px;
+    padding: 8px 18px;
     border-radius: 9999px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
     white-space: nowrap;
-    font-size: 1.05rem;
+    font-size: 0.88rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 54px;
+    min-height: 36px;
 }
 
 .filter-btn:hover {
@@ -397,8 +397,8 @@ input:focus {
 .cancel-button,
 .save-button {
     flex: 1;
-    padding: 18px;
-    font-size: 1.2rem;
+    padding: 11px;
+    font-size: 0.95rem;
     font-weight: 600;
     border-radius: 9999px;
     cursor: pointer;
@@ -816,4 +816,252 @@ input:focus {
     opacity: 0.55;
     margin: 0;
     text-align: right;
+}
+
+/* ==================== RESPONSIVE MOBILE (iPhone 13 ~390px) ==================== */
+@media (max-width: 480px) {
+
+    /* HEADER: grid de 3 columnas → columna única */
+    .header-grid {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .header-center {
+        width: 100%;
+        padding: 1.2rem 1.2rem;
+        border-radius: 1rem;
+        height: auto;
+    }
+
+    h1 {
+        font-size: 1.6rem;
+        letter-spacing: -1px;
+    }
+
+    header p {
+        font-size: 0.85rem;
+    }
+
+    /* Countdowns: apilados en fila horizontal compacta */
+    .header-side.left-side,
+    .header-side.right-side {
+        width: 100%;
+        align-items: center;
+    }
+
+    .countdowns-container {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .countdown-box {
+        flex: 1 1 140px;
+        max-width: 180px;
+        min-width: unset;
+        padding: 10px 12px;
+        border-radius: 14px;
+    }
+
+    .countdown-title {
+        font-size: 0.78rem;
+    }
+
+    .countdown-time {
+        font-size: 0.95rem;
+        letter-spacing: 1px;
+    }
+
+    .countdown-time span {
+        min-width: 24px;
+    }
+
+    .add-countdown-btn {
+        display: none;
+    }
+
+    .header-side.left-side,
+    .header-side.right-side,
+    #countdowns-left,
+    #countdowns-right {
+        display: none;
+    }
+
+    /* CONTAINER principal */
+    .container {
+        padding: 0 1rem 3rem;
+    }
+
+    /* QUOTE CARD */
+    .quote-card {
+        padding: 16px 20px;
+        margin-bottom: 1.2rem;
+    }
+
+    .quote-text {
+        font-size: 0.88rem;
+    }
+
+    .quote-author {
+        font-size: 0.78rem;
+    }
+
+    /* FILTROS */
+    .filters-section {
+        gap: 8px;
+        margin-bottom: 1.2rem;
+    }
+
+    .filter-btn {
+        padding: 6px 12px;
+        font-size: 0.75rem;
+        min-height: 32px;
+    }
+
+    /* BOTÓN AGREGAR */
+    .add-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .add-button {
+        width: 100%;
+        justify-content: center;
+        padding: 10px 20px;
+        font-size: 0.95rem;
+    }
+
+    .plus {
+        font-size: 1rem;
+    }
+
+    /* PROGRESS TOTAL */
+    .total-progress-card {
+        padding: 14px 16px;
+        margin-bottom: 1rem;
+    }
+
+    .total-progress-pct {
+        font-size: 1.1rem;
+    }
+
+    /* GRID DE CARDS → 1 columna */
+    .guides-grid {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+    }
+
+    .card {
+        padding: 1.4rem;
+        border-radius: 20px;
+    }
+
+    .guide-name {
+        font-size: 1.2rem;
+        max-width: 100%;
+    }
+
+    .progress-info {
+        font-size: 0.9rem;
+    }
+
+    .percentage {
+        font-size: 0.85rem;
+        padding: 3px 10px;
+    }
+
+    .progress-bar-container {
+        height: 18px;
+        margin-bottom: 1.2rem;
+    }
+
+    /* EDIT SECTION: inputs apilados */
+    .edit-section {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .input-group {
+        flex: 1 1 80px;
+    }
+
+    .input-group input {
+        padding: 10px 12px;
+        font-size: 1rem;
+        border-radius: 12px;
+    }
+
+    .update-btn {
+        width: 100%;
+        padding: 8px;
+        border-radius: 10px;
+        font-size: 0.82rem;
+    }
+
+    /* MODALES */
+    .modal-content {
+        margin: 1rem;
+        padding: 1.5rem;
+        border-radius: 20px;
+        max-width: calc(100vw - 2rem);
+    }
+
+    #modal-title {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.8rem;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    label {
+        font-size: 0.9rem;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="datetime-local"] {
+        padding: 12px 14px;
+        font-size: 1rem;
+        border-radius: 14px;
+    }
+
+    .modal-buttons {
+        gap: 0.8rem;
+        margin-top: 1.2rem;
+    }
+
+    .cancel-button,
+    .save-button {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+
+    /* EMPTY STATE */
+    .empty-icon {
+        font-size: 4rem;
+    }
+
+    .empty-state h2 {
+        font-size: 1.4rem;
+    }
+
+    .empty-state p {
+        font-size: 1rem;
+    }
+
+    #add-countdown-btn {
+        display: none;
+    }
 }
