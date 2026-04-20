@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Se Aprueban los Parciales</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+
+<style>
+        .total-progress-card {
+            background: linear-gradient(135deg, rgba(130, 130, 130, 0.08), rgba(255, 93, 93, 0.03));            border: 1px solid rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 14px;
+            padding: 18px 24px;
+            margin-bottom: 24px;
+        }
+        .total-progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .total-progress-label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+        .total-progress-pct {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .total-progress-bar-container {
+            background: rgba(255,255,255,0.1);
+            border-radius: 999px;
+            height: 12px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        .total-progress-bar {
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #a78bfa, #f472b6);
+            transition: width 0.6s cubic-bezier(.4,0,.2,1);
+        }
+        .total-progress-sub {
+            font-size: 0.78rem;
+            opacity: 0.55;
+            margin: 0;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+    
+    <header>
+        <div class="header-grid">
+            <!-- Columna 1: Izquierda (primeros 3 countdowns) -->
+            <div class="header-side left-side">
+                <div id="countdowns-left" class="countdowns-container"></div>
+            </div>
+
+            <!-- Columna 2: Título centrado -->
+            <div class="header-center">
+                <h1>Se Aprueban los Parciales</h1>
+                <p>Trackea tus guías • Todo se guarda automáticamente</p>
+                <button id="add-countdown-btn" class="add-countdown-btn" style="margin-top:1rem;">
+                    + Agregar Parcial
+                </button>
+            </div>
+
+            <!-- Columna 3: Derecha (overflow a partir del 4to) -->
+            <div class="header-side right-side">
+                <div id="countdowns-right" class="countdowns-container"></div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Card de frase motivacional -->
+        <div class="quote-card" id="quote-card">
+            <div class="quote-icon">✨</div>
+            <p class="quote-text" id="quote-text">Cargando frase...</p>
+            <p class="quote-author" id="quote-author"></p>
+            <button class="quote-refresh-btn" id="quote-refresh-btn" title="Nueva frase">↻</button>
+        </div>
+
+        <div class="filters-section">
+            <button class="filter-btn active" id="filter-all" data-filter="all">Todas</button>
+            <div id="materia-filters" class="materia-filters"></div>
+        </div>
+
+        <div class="add-section">
+            <button id="add-btn" class="add-button">
+                <span class="plus">✚</span> Agregar Nueva Guía
+            </button>
+        </div>
+
+        <!-- Barra de progreso total -->
+        <div class="total-progress-card" id="total-progress-card" style="display:none;">
+            <div class="total-progress-header">
+                <span class="total-progress-label">📊 Progreso Total</span>
+                <span class="total-progress-pct" id="total-progress-pct">0%</span>
+            </div>
+            <div class="total-progress-bar-container">
+                <div class="total-progress-bar" id="total-progress-bar" style="width:0%"></div>
+            </div>
+            <p class="total-progress-sub" id="total-progress-sub"></p>
+        </div>
+
+        <div id="guides-container" class="guides-grid"></div>
+
+        <div id="empty-state" class="empty-state">
+            <div class="empty-icon">🌸</div>
+            <h2>Aún no tienes guías</h2>
+            <p>¡Agrega tu primera guía y empieza a trackear tu progreso!</p>
+        </div>
+    </main>
+
+    <!-- Modal Guías -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2 id="modal-title">Nueva Guía</h2>
+            <form id="guide-form">
+                <div class="form-group">
+                    <label for="guide-name">Nombre de la guía</label>
+                    <input type="text" id="guide-name" placeholder="Ej: Rutina de Abdominales" required>
+                </div>
+                <div class="form-group">
+                    <label for="materia">Materia / Categoría</label>
+                    <input type="text" id="materia" placeholder="Ej: Matemáticas, Yoga..." required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="total-exercises">Total de ejercicios</label>
+                        <input type="number" id="total-exercises" min="1" value="30" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="current-exercise">Ejercicio actual</label>
+                        <input type="number" id="current-exercise" min="0" value="1" required>
+                    </div>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" id="cancel-btn" class="cancel-button">Cancelar</button>
+                    <button type="submit" class="save-button">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Nuevo Parcial -->
+    <div id="exam-modal" class="modal">
+        <div class="modal-content">
+            <h2>📅 Nuevo Parcial</h2>
+            <form id="exam-form">
+                <div class="form-group">
+                    <label for="exam-subject">Materia / Nombre del Parcial</label>
+                    <input type="text" id="exam-subject" placeholder="Ej: Matemática II" required>
+                </div>
+                <div class="form-group">
+                    <label for="exam-date">Fecha y Hora</label>
+                    <input type="datetime-local" id="exam-date" required>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" id="cancel-exam-btn" class="cancel-button">Cancelar</button>
+                    <button type="submit" class="save-button">Guardar Parcial</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ==================== MÚLTIPLES PARCIALES ====================
+        let exams = [];
+        const EXAMS_STORAGE = 'upcomingExams';
+
+        function loadExams() {
+            const saved = localStorage.getItem(EXAMS_STORAGE);
+            exams = saved ? JSON.parse(saved) : [];
+            renderCountDowns();
+        }
+
+        function saveExams() {
+            localStorage.setItem(EXAMS_STORAGE, JSON.stringify(exams));
+        }
+
+        function renderCountDowns() {
+            const left  = document.getElementById('countdowns-left');
+            const right = document.getElementById('countdowns-right');
+            left.innerHTML  = '';
+            right.innerHTML = '';
+
+            if (exams.length === 0) {
+                left.innerHTML = `<p class="no-exams">No hay parciales</p>`;
+                return;
+            }
+
+            exams.forEach((exam, i) => {
+                const box = document.createElement('div');
+                box.className = 'countdown-box';
+                box.innerHTML = `
+                    <div class="countdown-header">
+                        <span class="countdown-title">${exam.title}</span>
+                        <button class="delete-countdown" data-index="${i}">×</button>
+                    </div>
+                    <div class="countdown-time" data-index="${i}">
+                        <span class="days">00</span>d 
+                        <span class="hours">00</span>h 
+                        <span class="minutes">00</span>m 
+                    </div>
+                `;
+                // Primeros 2 → izquierda, el resto → derecha
+                if (i < 2) {
+                    left.appendChild(box);
+                } else {
+                    right.appendChild(box);
+                }
+            });
+        }
+
+        function startCountDowns() {
+            setInterval(() => {
+                document.querySelectorAll('.countdown-time').forEach(timeBox => {
+                    const index = parseInt(timeBox.dataset.index);
+                    const exam = exams[index];
+                    if (!exam) return;
+
+                    const diff = new Date(exam.date).getTime() - Date.now();
+
+                    if (diff < 0) {
+                        timeBox.innerHTML = `<span style="color:#ef4444">¡Ya pasó!</span>`;
+                        return;
+                    }
+
+                    const d = Math.floor(diff / 86400000);
+                    const h = Math.floor((diff % 86400000) / 3600000);
+                    const m = Math.floor((diff % 3600000) / 60000);
+                    const s = Math.floor((diff % 60000) / 1000);
+
+                    timeBox.querySelector('.days').textContent = String(d).padStart(2, '0');
+                    timeBox.querySelector('.hours').textContent = String(h).padStart(2, '0');
+                    timeBox.querySelector('.minutes').textContent = String(m).padStart(2, '0');
+                });
+            }, 1000);
+        }
+
+        // ==================== GUÍAS (código anterior) ====================
+        let guides = [];
+        const STORAGE_KEY = 'aestheticProgressGuides';
+        let currentFilter = 'all';
+
+        function loadGuides() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            guides = saved ? JSON.parse(saved) : [];
+            renderGuides();
+            renderFilters();
+        }
+
+        function saveGuides() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(guides));
+        }
+
+        function calculateProgress(current, total) {
+            return total > 0 ? Math.min(Math.floor((current / total) * 100), 100) : 0;
+        }
+
+        function getUniqueMaterias() {
+            return [...new Set(guides.map(g => g.materia))].sort();
+        }
+
+        function renderFilters() {
+            const container = document.getElementById('materia-filters');
+            container.innerHTML = '';
+            getUniqueMaterias().forEach(materia => {
+                const btn = document.createElement('button');
+                btn.className = 'filter-btn';
+                btn.textContent = materia;
+                btn.dataset.filter = materia;
+                btn.addEventListener('click', () => {
+                    currentFilter = materia;
+                    updateActiveFilter();
+                    renderGuides();
+                });
+                container.appendChild(btn);
+            });
+        }
+
+        function updateActiveFilter() {
+            document.querySelectorAll('.filter-btn').forEach(btn => 
+                btn.classList.toggle('active', btn.dataset.filter === currentFilter)
+            );
+        }
+
+        function renderGuides() {
+            const container = document.getElementById('guides-container');
+            const empty = document.getElementById('empty-state');
+            container.innerHTML = '';
+
+            const filtered = currentFilter === 'all' ? guides : guides.filter(g => g.materia === currentFilter);
+
+            if (filtered.length === 0) {
+                empty.style.display = 'flex';
+                return;
+            }
+            empty.style.display = 'none';
+
+            filtered.forEach(guide => {
+                const index = guides.findIndex(g => g.id === guide.id);
+                const progress = calculateProgress(guide.current, guide.total);
+
+                container.innerHTML += `
+                    <div class="card" data-index="${index}">
+                        <div class="card-header">
+                            <div>
+                                <span class="materia-tag">${guide.materia}</span>
+                                <h3 class="guide-name">${guide.name}</h3>
+                            </div>
+                            <button class="delete-btn" data-index="${index}">🗑️</button>
+                        </div>
+                        <div class="progress-info">
+                            <span class="exercise-counter">Ejercicio <strong>${guide.current}</strong> de <strong>${guide.total}</strong></span>
+                            <span class="percentage">${progress}%</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" style="width: ${progress}%"></div>
+                        </div>
+                        <div class="edit-section">
+                            <div class="input-group"><label>Total</label><input type="number" class="total-input" value="${guide.total}" data-index="${index}"></div>
+                            <div class="input-group"><label>Actual</label><input type="number" class="current-input" value="${guide.current}" data-index="${index}"></div>
+                            <button class="update-btn" data-index="${index}">Actualizar</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            addCardListeners();
+            renderTotalProgress();
+        }
+
+        function renderTotalProgress() {
+            const card = document.getElementById('total-progress-card');
+            if (!guides.length) { card.style.display = 'none'; return; }
+            const totalEx = guides.reduce((s, g) => s + g.total, 0);
+            const doneEx  = guides.reduce((s, g) => s + g.current, 0);
+            const pct = totalEx > 0 ? Math.min(Math.round((doneEx / totalEx) * 100), 100) : 0;
+            card.style.display = 'block';
+            document.getElementById('total-progress-pct').textContent = pct + '%';
+            document.getElementById('total-progress-bar').style.width = pct + '%';
+            document.getElementById('total-progress-sub').textContent =
+                doneEx + ' de ' + totalEx + ' ejercicios completados en ' + guides.length + ' guía' + (guides.length !== 1 ? 's' : '');
+        }
+
+        function addCardListeners() {
+            // actualizar y eliminar (código anterior)
+            document.querySelectorAll('.update-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const i = parseInt(btn.dataset.index);
+                    guides[i].total = parseInt(document.querySelector(`.total-input[data-index="${i}"]`).value) || 1;
+                    guides[i].current = Math.min(parseInt(document.querySelector(`.current-input[data-index="${i}"]`).value) || 0, guides[i].total);
+                    saveGuides();
+                    renderGuides();
+                    renderFilters();
+                });
+            });
+
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (confirm('¿Eliminar guía?')) {
+                        guides.splice(parseInt(btn.dataset.index), 1);
+                        saveGuides();
+                        renderGuides();
+                        renderFilters();
+                    }
+                });
+            });
+        }
+
+        // ==================== INIT ====================
+        function init() {
+            loadGuides();
+            loadExams();
+            startCountDowns();
+
+            // Agregar parcial
+            document.getElementById('add-countdown-btn').addEventListener('click', () => {
+                document.getElementById('exam-modal').style.display = 'flex';
+            });
+
+            // Guardar parcial
+            document.getElementById('exam-form').addEventListener('submit', e => {
+                e.preventDefault();
+                const title = document.getElementById('exam-subject').value.trim();
+                const date = document.getElementById('exam-date').value;
+                if (title && date) {
+                    exams.push({title, date});
+                    saveExams();
+                    renderCountDowns();
+                    document.getElementById('exam-modal').style.display = 'none';
+                }
+            });
+
+            // Eliminar parcial
+            document.addEventListener('click', e => {
+                if (e.target.classList.contains('delete-countdown')) {
+                    if (confirm('¿Eliminar este parcial?')) {
+                        exams.splice(parseInt(e.target.dataset.index), 1);
+                        saveExams();
+                        renderCountDowns();
+                    }
+                }
+            });
+
+            // Botón "Todas"
+            document.getElementById('filter-all').addEventListener('click', () => {
+                currentFilter = 'all';
+                updateActiveFilter();
+                renderGuides();
+            });
+
+            // Modal de guías
+            const addBtn = document.getElementById('add-btn');
+            const modal = document.getElementById('modal');
+
+            addBtn.addEventListener('click', () => {
+                document.getElementById('modal-title').textContent = 'Nueva Guía';
+                document.getElementById('guide-form').reset();
+                modal.style.display = 'flex';
+            });
+
+            document.getElementById('cancel-btn').addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+
+            document.getElementById('cancel-exam-btn').addEventListener('click', () => {
+                document.getElementById('exam-modal').style.display = 'none';
+            });
+
+            document.getElementById('guide-form').addEventListener('submit', e => {
+                e.preventDefault();
+                const name = document.getElementById('guide-name').value.trim();
+                const materia = document.getElementById('materia').value.trim();
+                const total = parseInt(document.getElementById('total-exercises').value) || 1;
+                const current = Math.min(parseInt(document.getElementById('current-exercise').value) || 0, total);
+                guides.push({ id: Date.now(), name, materia, total, current });
+                saveGuides();
+                renderGuides();
+                renderFilters();
+                modal.style.display = 'none';
+            });
+
+            // Cerrar modales al hacer click fuera
+            window.addEventListener('click', e => {
+                if (e.target === modal) modal.style.display = 'none';
+                if (e.target === document.getElementById('exam-modal')) document.getElementById('exam-modal').style.display = 'none';
+            });
+        }
+
+        // ==================== FRASE MOTIVACIONAL ====================
+        async function fetchQuote() {
+            const textEl = document.getElementById('quote-text');
+            const authorEl = document.getElementById('quote-author');
+            const btn = document.getElementById('quote-refresh-btn');
+
+            btn.classList.add('spinning');
+            textEl.style.opacity = '0';
+            authorEl.style.opacity = '0';
+
+            try {
+                const res = await fetch('https://thequoteshub.com/api/');
+                const data = await res.json();
+                setTimeout(() => {
+                    textEl.textContent = `"${data.text}"`;
+                    authorEl.textContent = `— ${data.author}`;
+                    textEl.style.opacity = '1';
+                    authorEl.style.opacity = '1';
+                    btn.classList.remove('spinning');
+                }, 300);
+            } catch {
+                textEl.textContent = 'No se pudo cargar la frase 🌸';
+                textEl.style.opacity = '1';
+                btn.classList.remove('spinning');
+            }
+        }
+
+        window.onload = () => {
+            init();
+            fetchQuote();
+            document.getElementById('quote-refresh-btn').addEventListener('click', fetchQuote);
+        };
+    </script>
+</body>
+</html>
