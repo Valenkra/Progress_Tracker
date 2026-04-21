@@ -1,0 +1,11 @@
+.empty-state {
+    display: none;
+    text-align: center;
+}
+
+.app-footer {
+    width: 100%;
+    background: #e551a7;
+    color: white;
+    text-align: center;
+}

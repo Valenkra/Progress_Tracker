@@ -1,0 +1,39 @@
+header {
+    text-align: center;
+    padding: 1rem;
+}
+
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 2rem 4rem;
+}
+
+/* GRID HEADER */
+.header-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem 2rem 1.5rem;
+    gap: 2rem;
+    align-items: start;
+}
+
+.header-center {
+    text-align: center;
+    background-color: #fff;
+    padding: 2rem 3rem;
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* LADOS */
+.header-side.left-side,
+.header-side.right-side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}

@@ -1,0 +1,45 @@
+h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, #c084fc, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.3rem;
+}
+
+header p {
+    font-size: 1.2rem;
+    color: #9f7aea;
+}
+
+/* COUNTDOWNS */
+.countdowns-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.countdown-box {
+    background: white;
+    padding: 14px 20px;
+    border-radius: 20px;
+    border: 2px solid #f3e8ff;
+    box-shadow: 0 10px 20px -5px rgb(192 132 252 / 0.15);
+}
+
+.countdown-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.countdown-title {
+    font-weight: 700;
+    color: #6b21a8;
+}
+
+.countdown-time {
+    font-size: 1.65rem;
+    font-weight: 700;
+    text-align: center;
+}

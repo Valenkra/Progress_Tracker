@@ -1,0 +1,26 @@
+.add-button {
+    background: linear-gradient(90deg, #c084fc, #ec4899);
+    color: white;
+    border-radius: 9999px;
+    padding: 11px 28px;
+    cursor: pointer;
+}
+
+.filter-btn {
+    background: white;
+    border: 2px solid #e0c4f7;
+    border-radius: 9999px;
+    padding: 8px 18px;
+}
+
+.filter-btn.active {
+    background: linear-gradient(90deg, #c084fc, #ec4899);
+    color: white;
+}
+
+/* QUOTE */
+.quote-card {
+    border-radius: 16px;
+    padding: 24px 32px;
+    text-align: center;
+}

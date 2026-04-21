@@ -1,0 +1,32 @@
+.auth-card {
+    background: white;
+    border-radius: 32px;
+    padding: 2.8rem;
+}
+
+.auth-submit {
+    background: linear-gradient(90deg, #c084fc, #ec4899);
+    color: white;
+}
+
+.user-pill {
+    display: inline-flex;
+    align-items: center;
+}
+
+.sync-btn {
+    border-radius: 9999px;
+}
+
+/* SAVE INDICATOR */
+#save-indicator {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+}
+
+/* OVERLAY */
+#sync-overlay {
+    position: fixed;
+    inset: 0;
+}
