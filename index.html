@@ -469,9 +469,9 @@
 
     document.getElementById('refresh-btn').addEventListener('click', async () => {
         if (currentUser && sb) {
-            await syncToCloud(); // trae lo último
+            await syncToCloud();
         }
-        location.reload(); // recarga la página
+        location.reload();
     });
 
     // ============================================================
@@ -486,25 +486,27 @@
         try {
             // --- GUÍAS ---
             statusEl.textContent = 'Sincronizando guías...';
-            const { data: cloudGuides } = await sb.from('guides').select('id');
+            const { data: cloudGuides } = await sb
+                .from('guides')
+                .select('id')
+                .eq('user_id', currentUser.id);
             const cloudIds = new Set((cloudGuides || []).map(g => String(g.id)));
 
             // Guías con id numérico (creadas localmente antes de conectarse)
-            const toUpload = guides.filter(g => !cloudIds.has(String(g.id)));
-            if (toUpload.length) {
-                await sb.from('guides').insert(
-                    toUpload.map(g => ({ name: g.name, materia: g.materia,
-                        total: g.total, current: g.current, user_id: currentUser.id }))
-                );
-            }
+
             const { data: finalGuides } = await sb.from('guides')
-                .select('*').order('created_at', { ascending: false });
+                .select('*')
+                .eq('user_id', currentUser.id)
+                .order('created_at', { ascending: false });
             guides = finalGuides || [];
             saveGuidesLocal();
 
             // --- EXÁMENES ---
             statusEl.textContent = 'Sincronizando parciales...';
-            const { data: cloudExams } = await sb.from('exams').select('id');
+            const { data: cloudExams } = await sb
+                .from('exams')
+                .select('id')
+                .eq('user_id', currentUser.id);
             const cloudExamIds = new Set((cloudExams || []).map(e => String(e.id)));
 
             const examsToUpload = exams.filter(e => !cloudExamIds.has(String(e.id)));
@@ -513,8 +515,11 @@
                     examsToUpload.map(e => ({ title: e.title, date: e.date, user_id: currentUser.id }))
                 );
             }
-            const { data: finalExams } = await sb.from('exams')
-                .select('*').order('date', { ascending: true });
+            const { data: finalExams } = await sb
+                .from('exams')
+                .select('*')
+                .eq('user_id', currentUser.id)
+                .order('date', { ascending: true });
             exams = finalExams || [];
             saveExamsLocal();
 
@@ -539,6 +544,11 @@
 
     function subscribeToRealtime() {
     if (!sb || !currentUser) return;
+
+    // 🧹 limpiar subscripciones anteriores
+    if (sb) {
+        sb.removeAllChannels();
+    }
 
     // GUÍAS
     sb.channel('guides-changes')
@@ -619,11 +629,24 @@
     async function addGuide(guide) {
         if (currentUser && sb) {
             const { data, error } = await sb.from('guides')
-                .insert([{ ...guide, user_id: currentUser.id }]).select().single();
-            if (!error && data) { guides.unshift(data); saveGuidesLocal(); showSaved(true); return; }
+                .insert([{ ...guide, user_id: currentUser.id }])
+                .select()
+                .single();
+
+            if (!error && data) {
+                guides.unshift(data);   // ✅ agregar a estado
+                saveGuidesLocal();
+                renderGuides();         // ✅ refrescar UI
+                showSaved(true);
+                return;
+            }
         }
+
+        // fallback local
         guides.unshift({ id: Date.now(), ...guide });
-        saveGuidesLocal(); showSaved(false);
+        saveGuidesLocal();
+        renderGuides();                 // ✅ también acá
+        showSaved(false);
     }
 
     async function updateGuide(id, changes) {
@@ -653,9 +676,7 @@
             const { data, error } = await sb.from('exams')
                 .insert([{ ...exam, user_id: currentUser.id }]).select().single();
             if (!error && data) {
-                exams.push(data);
-                exams.sort((a, b) => new Date(a.date) - new Date(b.date));
-                saveExamsLocal(); showSaved(true); return;
+                return;
             }
         }
         exams.push({ id: 'local_' + Date.now(), ...exam });
@@ -891,7 +912,7 @@
         if (savedUser) {
             currentUser = JSON.parse(savedUser);
             await loadSupabaseSDK();
-            await syncToCloud();
+            await syncToCloud(); 
             subscribeToRealtime(); // 👈 CLAVE
             // Verificar que el token siga vigente EN SEGUNDO PLANO (no bloquea la UI)
             setTimeout(async () => {
