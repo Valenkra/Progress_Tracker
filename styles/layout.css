@@ -1,39 +1,151 @@
-header {
-    text-align: center;
-    padding: 1rem;
-}
-
+/* ==================== MAIN CONTAINER ==================== */
 .container {
     max-width: 1280px;
     margin: 0 auto;
     padding: 0 2rem 4rem;
 }
 
-/* GRID HEADER */
-.header-grid {
-    display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 2rem 2rem 1.5rem;
-    gap: 2rem;
-    align-items: start;
-}
-
-.header-center {
+/* ==================== BOTÓN AGREGAR ==================== */
+.add-section {
     text-align: center;
-    background-color: #fff;
-    padding: 2rem 3rem;
-    border-radius: 1rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    margin-bottom: 3rem;
 }
 
-/* LADOS */
-.header-side.left-side,
-.header-side.right-side {
+.add-button {
+    background: linear-gradient(90deg, #c084fc, #ec4899);
+    color: white;
+    border: none;
+    padding: 11px 28px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 9999px;
+    cursor: pointer;
+    box-shadow: 0 15px 25px -8px rgb(192 132 252);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.add-button:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 25px 30px -10px rgb(236 72 153);
+}
+
+.plus {
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+/* ==================== GRID ==================== */
+.guides-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 2rem;
+}
+
+/* ==================== FILTROS ==================== */
+.filters-section {
     display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+    padding: 0 1rem;
+}
+
+.filter-btn {
+    background: white;
+    color: #6b21a8;
+    border: 2px solid #e0c4f7;
+    padding: 8px 18px;
+    border-radius: 9999px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    font-size: 0.88rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+}
+
+.filter-btn:hover {
+    background: #f3e8ff;
+    border-color: #c084fc;
+    transform: translateY(-2px);
+}
+
+.filter-btn.active {
+    background: linear-gradient(90deg, #c084fc, #ec4899);
+    color: white;
+    border: 0px solid transparent;
+    box-shadow: 0 12px 25px -5px rgb(192 132 252 / 0.4);
+    transform: scale(1);
+}
+
+.materia-tag {
+    display: inline-block;
+    background: linear-gradient(90deg, #c084fc, #ec4899);
+    color: white;
+    font-size: 0.85rem;
+    padding: 4px 14px;
+    border-radius: 9999px;
+    margin-bottom: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    width: fit-content;
+}
+
+.materia-filters {
+    display: contents;
+}
+
+/* ==================== ESTADO VACÍO ==================== */
+.empty-state {
+    display: none;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 5rem 2rem;
+    color: #9f7aea;
+}
+
+.empty-icon {
+    font-size: 6rem;
+    margin-bottom: 1rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+.empty-state h2 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    font-size: 1.3rem;
+    max-width: 400px;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+/* ==================== FOOTER ==================== */
+.app-footer {
+    width: 100%;
+    background: #e551a7;
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.app-footer p {
+    margin: 0;
 }

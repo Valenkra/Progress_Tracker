@@ -1,3 +1,20 @@
+/* ==================== HEADER ==================== */
+
+header {
+    text-align: center;
+    padding: 1rem;
+}
+
+.header-content {
+    max-width: 700px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border-radius: 30px;
+    padding: 1.5rem 3rem;
+    box-shadow: 0 20px 25px -5px rgb(192 132 252 / 0.15);
+}
+
 h1 {
     font-size: 2.8rem;
     font-weight: 700;
@@ -5,41 +22,286 @@ h1 {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 0.3rem;
+    letter-spacing: -2px;
 }
 
 header p {
     font-size: 1.2rem;
     color: #9f7aea;
+    font-weight: 500;
 }
 
-/* COUNTDOWNS */
+/* ==================== HEADER GRID ==================== */
+.header-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem 2rem 1.5rem;
+    gap: 2rem;
+    align-items: start;
+}
+
+.header-center {
+    text-align: center;
+    background-color: #fff;
+    padding: 2rem 3rem;
+    border-radius: 1rem;
+    max-height: 45em;
+    height: -webkit-fill-available;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.header-main {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+/* ==================== COLUMNAS LATERALES COUNTDOWNS ==================== */
+.header-side.left-side {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.header-side.right-side {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: static;
+}
+
+/* ==================== COUNTDOWN BOX ==================== */
+.countdown-box {
+    background: white;
+    border-radius: 24px;
+    padding: 18px 24px;
+    box-shadow: 0 15px 25px -5px rgb(192 132 252 / 0.15);
+    border: 2px solid #f3e8ff;
+    min-width: 280px;
+    transition: all 0.3s ease;
+}
+
+.countdown-box:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 30px -8px rgb(236 72 153 / 0.25);
+}
+
+.countdown-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.countdown-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #6b21a8;
+}
+
+.edit-exam-btn {
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: all 0.2s;
+}
+
+.edit-exam-btn:hover {
+    opacity: 1;
+    transform: scale(1.2);
+}
+
+.countdown-time {
+    font-size: 1.65rem;
+    font-weight: 700;
+    color: #4c1d95;
+    letter-spacing: 2px;
+    text-align: center;
+    background: linear-gradient(90deg, #c084fc, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.countdown-time span {
+    display: inline-block;
+    min-width: 38px;
+    text-align: center;
+}
+
+/* Contadores */
 .countdowns-container {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-.countdown-box {
-    background: white;
-    padding: 14px 20px;
-    border-radius: 20px;
-    border: 2px solid #f3e8ff;
-    box-shadow: 0 10px 20px -5px rgb(192 132 252 / 0.15);
+.upcoming-title {
+    color: #9f7aea;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
 }
 
-.countdown-header {
+.delete-countdown {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #ec4899;
+    cursor: pointer;
+}
+
+.add-countdown-btn {
+    background: linear-gradient(90deg, #c084fc, #ec4899);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 9999px;
+    width: 100%;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+.header-center .add-countdown-btn {
+    display: block;
+    margin: 1rem auto 0;
+    width: fit-content;
+    padding: 10px 28px;
+    font-size: 1rem;
+}
+
+.no-exams { color: #9f7aea; font-style: italic; text-align: center; }
+
+/* ==================== QUOTE CARD ==================== */
+.quote-card {
+    position: relative;
+    background: linear-gradient(135deg, rgba(130, 130, 130, 0.08), rgba(255, 93, 93, 0.03));
+    border: 1px solid rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 24px 32px;
+    margin-bottom: 2.5rem;
+    text-align: center;
+    transition: box-shadow 0.3s;
+}
+.quote-card:hover {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+.quote-icon {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+}
+.quote-text {
+    font-size: 1.05rem;
+    font-style: italic;
+    line-height: 1.6;
+    margin: 0 0 10px;
+    transition: opacity 0.3s ease;
+}
+.quote-author {
+    font-size: 0.85rem;
+    opacity: 0.65;
+    margin: 0;
+    transition: opacity 0.3s ease;
+}
+.quote-refresh-btn {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: inherit;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.quote-refresh-btn:hover {
+    background: rgba(255,255,255,0.2);
+}
+.quote-refresh-btn.spinning {
+    animation: spin 0.6s linear infinite;
+}
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ==================== TOTAL PROGRESS CARD ==================== */
+.total-progress-card {
+    background: linear-gradient(135deg, rgba(130, 130, 130, 0.08), rgba(255, 93, 93, 0.03));
+    border: 1px solid rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 14px;
+    padding: 18px 24px;
+    margin-bottom: 24px;
+}
+.total-progress-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 10px;
+}
+.total-progress-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    opacity: 0.9;
+}
+.total-progress-pct {
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+.total-progress-bar-container {
+    background: rgba(255,255,255,0.1);
+    border-radius: 999px;
+    height: 12px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+.total-progress-bar {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #a78bfa, #f472b6);
+    transition: width 0.6s cubic-bezier(.4,0,.2,1);
+}
+.total-progress-sub {
+    font-size: 0.78rem;
+    opacity: 0.55;
+    margin: 0;
+    text-align: right;
 }
 
-.countdown-title {
-    font-weight: 700;
+/* ==================== REFRESH BUTTON ==================== */
+.refresh-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(10px);
+    border: 1.5px solid rgba(192,132,252,0.35);
+    border-radius: 9999px;
+    padding: 8px 12px;
+    font-size: 1rem;
+    cursor: pointer;
     color: #6b21a8;
+    transition: all 0.25s;
+    z-index: 100;
 }
-
-.countdown-time {
-    font-size: 1.65rem;
-    font-weight: 700;
-    text-align: center;
+.refresh-btn:hover {
+    background: #f3e8ff;
+    transform: rotate(90deg) scale(1.1);
 }

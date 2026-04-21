@@ -1,0 +1,105 @@
+/* ==================== SYNC BUTTON ==================== */
+.sync-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(12px);
+    border: 1.5px solid rgba(192, 132, 252, 0.35);
+    border-radius: 9999px;
+    padding: 8px 20px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #6b21a8;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-top: 0.9rem;
+    letter-spacing: 0.2px;
+    box-shadow: 0 4px 14px rgba(192, 132, 252, 0.12);
+}
+
+.sync-btn:hover {
+    background: #f3e8ff;
+    border-color: #c084fc;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(192, 132, 252, 0.25);
+}
+
+.sync-btn:active {
+    transform: translateY(0);
+}
+
+/* ==================== USER PILL ==================== */
+.user-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(12px);
+    border: 1.5px solid rgba(192, 132, 252, 0.2);
+    border-radius: 9999px;
+    padding: 5px 14px 5px 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6b21a8;
+    margin-top: 0.9rem;
+    align-content: center;
+    box-shadow: 0 4px 14px rgba(192, 132, 252, 0.1);
+}
+
+.user-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c084fc, #ec4899);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.82rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(192, 132, 252, 0.4);
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    color: #ec4899;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 2px 6px;
+    margin-left: 2px;
+    border-radius: 9999px;
+    transition: background 0.2s, opacity 0.2s;
+    letter-spacing: 0.2px;
+}
+
+.logout-btn:hover {
+    background: rgba(236, 72, 153, 0.08);
+    opacity: 0.85;
+}
+
+/* ==================== SAVE INDICATOR ==================== */
+#save-indicator {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: linear-gradient(90deg, #c084fc, #ec4899);
+    color: white;
+    padding: 11px 22px;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    box-shadow: 0 8px 24px rgba(192, 132, 252, 0.45);
+    transform: translateY(90px);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 9999;
+    pointer-events: none;
+    letter-spacing: 0.2px;
+}
+
+#save-indicator.visible {
+    transform: translateY(0);
+}
