@@ -1,5 +1,8 @@
 [
-  "Hoy estudias por el futuro que querés vivir.",
+  { 
+    "text" : "Hoy estudias por el futuro que querés vivir.",
+    "author" : "Kim Kardashian" 
+  },
   "No se trata de ser perfecto, sino constante.",
   "Cada página leída es un paso más cerca de tu meta.",
   "El esfuerzo de hoy es el éxito de mañana.",

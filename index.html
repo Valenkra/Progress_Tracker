@@ -320,6 +320,7 @@
 
     <script>
 
+    let frases = [];
     
     // ============================================================
     //  CONSTANTES
@@ -890,25 +891,39 @@
     // ============================================================
     //  FRASE MOTIVACIONAL
     // ============================================================
-    async function fetchQuote() {
+    async function loadFrases() {
+        try {
+            const res = await fetch('./frases.json');
+            frases = await res.json();
+            console.log('Frases cargadas:', frases.length);
+        } catch (err) {
+            console.error('Error cargando frases:', err);
+        }
+    }
+    
+    function fetchQuote() {
         const textEl = document.getElementById('quote-text');
         const authEl = document.getElementById('quote-author');
         const btn    = document.getElementById('quote-refresh-btn');
+
         btn.classList.add('spinning');
         textEl.style.opacity = authEl.style.opacity = '0';
-        try {
-            const data = await (await fetch('https://thequoteshub.com/api/')).json();
-            setTimeout(() => {
-                textEl.textContent = `"${data.text}"`;
-                authEl.textContent = `— ${data.author}`;
-                textEl.style.opacity = authEl.style.opacity = '1';
-                btn.classList.remove('spinning');
-            }, 300);
-        } catch {
-            textEl.textContent   = 'No se pudo cargar la frase 🌸';
+
+        if (!frases.length) {
+            textEl.textContent = 'Cargando frases...';
             textEl.style.opacity = '1';
             btn.classList.remove('spinning');
+            return;
         }
+
+        const random = frases[Math.floor(Math.random() * frases.length)];
+
+        setTimeout(() => {
+            textEl.textContent = `"${random.text}"`;
+            authEl.textContent = `— ${random.author}`;
+            textEl.style.opacity = authEl.style.opacity = '1';
+            btn.classList.remove('spinning');
+        }, 300);
     }
 
     // ============================================================
