@@ -1112,6 +1112,7 @@ input:focus {
     font-weight: 600;
     color: #6b21a8;
     margin-top: 0.9rem;
+    align-content: center;
     box-shadow: 0 4px 14px rgba(192, 132, 252, 0.1);
 }
 
@@ -1477,6 +1478,19 @@ input:focus {
         font-size: 0.82rem;
         padding: 10px 16px;
     }
+
+    .form-group input {
+        width: 100%;
+        padding: 16px 20px;
+        font-size: 1.05rem;
+        font-weight: 500;
+        color: #4c1d95;
+        background: #fff;
+        border: 2px solid #e0c4f7;
+        border-radius: 18px;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    }
 }
 
 .form-group {
@@ -1514,4 +1528,33 @@ input:focus {
 .form-group input::placeholder {
     color: #b8a0e0;
     opacity: 1;
+}
+
+.refresh-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(10px);
+    border: 1.5px solid rgba(192,132,252,0.35);
+    border-radius: 9999px;
+    padding: 8px 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    color: #6b21a8;
+    transition: all 0.25s;
+}
+
+.refresh-btn:hover {
+    background: #f3e8ff;
+    transform: rotate(90deg) scale(1.1);
+}
+
+@media (max-width: 480px) {
+    .refresh-btn {
+        position: fixed;
+        z-index: 1000;
+        top: 16px;
+        right: 16px;
+    }
 }

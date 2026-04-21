@@ -206,6 +206,9 @@
                 <h1>Se Aprueban los Parciales</h1>
                 <p>Trackea tus guías • Todo se guarda automáticamente</p>
                 <div id="account-area"></div>
+                <button id="refresh-btn" class="refresh-btn" title="Refrescar">
+                    🔄
+                </button>
                 <button id="add-countdown-btn" class="add-countdown-btn" style="margin-top:1rem;">
                     + Agregar Fecha de Parcial
                 </button>
@@ -439,6 +442,7 @@
                 localStorage.setItem(USER_KEY, JSON.stringify(currentUser));
                 closeAuthModal();
                 await syncToCloud();
+                subscribeToRealtime();
             } else {
                 const { error } = await client.auth.signUp({ email, password });
                 if (error) throw error;
@@ -461,6 +465,13 @@
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAuthModal(); });
     document.getElementById('auth-password').addEventListener('keydown', e => {
         if (e.key === 'Enter') handleAuth();
+    });
+
+    document.getElementById('refresh-btn').addEventListener('click', async () => {
+        if (currentUser && sb) {
+            await syncToCloud(); // trae lo último
+        }
+        location.reload(); // recarga la página
     });
 
     // ============================================================
@@ -526,7 +537,83 @@
         renderAccountArea();
     }
 
-    // ============================================================
+    function subscribeToRealtime() {
+    if (!sb || !currentUser) return;
+
+    // GUÍAS
+    sb.channel('guides-changes')
+        .on('postgres_changes', {
+            event: '*',
+            schema: 'public',
+            table: 'guides',
+            filter: `user_id=eq.${currentUser.id}`
+        }, payload => {
+            console.log('Cambio en guides:', payload);
+            handleRealtimeGuide(payload);
+        })
+        .subscribe();
+
+    // EXÁMENES
+    sb.channel('exams-changes')
+        .on('postgres_changes', {
+            event: '*',
+            schema: 'public',
+            table: 'exams',
+            filter: `user_id=eq.${currentUser.id}`
+        }, payload => {
+            console.log('Cambio en exams:', payload);
+            handleRealtimeExam(payload);
+        })
+        .subscribe();
+}
+
+    function handleRealtimeGuide(payload) {
+    const { eventType, new: newData, old } = payload;
+
+    if (eventType === 'INSERT') {
+        if (!guides.find(g => g.id === newData.id)) {
+            guides.unshift(newData);
+        }
+    }
+
+    if (eventType === 'UPDATE') {
+        const idx = guides.findIndex(g => g.id === newData.id);
+        if (idx !== -1) guides[idx] = newData;
+    }
+
+    if (eventType === 'DELETE') {
+        guides = guides.filter(g => g.id !== old.id);
+    }
+
+    saveGuidesLocal();
+    renderGuides();
+}
+    
+    function handleRealtimeExam(payload) {
+    const { eventType, new: newData, old } = payload;
+
+    if (eventType === 'INSERT') {
+        if (!exams.find(e => e.id === newData.id)) {
+            exams.push(newData);
+        }
+    }
+
+    if (eventType === 'UPDATE') {
+        const idx = exams.findIndex(e => e.id === newData.id);
+        if (idx !== -1) exams[idx] = newData;
+    }
+
+    if (eventType === 'DELETE') {
+        exams = exams.filter(e => e.id !== old.id);
+    }
+
+    exams.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    saveExamsLocal();
+    renderCountDowns();
+}
+
+// ============================================================
     //  CRUD GUÍAS — siempre local primero, nube si está conectado
     // ============================================================
     async function addGuide(guide) {
@@ -796,13 +883,16 @@
     // ============================================================
     //  INIT — 100% síncrono, sin esperar ninguna red
     // ============================================================
-    (function init() {
+    (async function init() {
         loadLocal();                // lee localStorage al instante
 
         // Restaurar sesión guardada sin llamar a Supabase
         const savedUser = localStorage.getItem(USER_KEY);
         if (savedUser) {
             currentUser = JSON.parse(savedUser);
+            await loadSupabaseSDK();
+            await syncToCloud();
+            subscribeToRealtime(); // 👈 CLAVE
             // Verificar que el token siga vigente EN SEGUNDO PLANO (no bloquea la UI)
             setTimeout(async () => {
                 try {
