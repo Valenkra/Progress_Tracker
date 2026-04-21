@@ -1065,3 +1065,453 @@ input:focus {
         display: none;
     }
 }
+
+
+/* ==================== SYNC BUTTON ==================== */
+.sync-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(12px);
+    border: 1.5px solid rgba(192, 132, 252, 0.35);
+    border-radius: 9999px;
+    padding: 8px 20px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #6b21a8;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-top: 0.9rem;
+    letter-spacing: 0.2px;
+    box-shadow: 0 4px 14px rgba(192, 132, 252, 0.12);
+}
+
+.sync-btn:hover {
+    background: #f3e8ff;
+    border-color: #c084fc;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(192, 132, 252, 0.25);
+}
+
+.sync-btn:active {
+    transform: translateY(0);
+}
+
+/* ==================== USER PILL ==================== */
+.user-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(12px);
+    border: 1.5px solid rgba(192, 132, 252, 0.2);
+    border-radius: 9999px;
+    padding: 5px 14px 5px 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6b21a8;
+    margin-top: 0.9rem;
+    box-shadow: 0 4px 14px rgba(192, 132, 252, 0.1);
+}
+
+.user-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c084fc, #ec4899);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.82rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(192, 132, 252, 0.4);
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    color: #ec4899;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 2px 6px;
+    margin-left: 2px;
+    border-radius: 9999px;
+    transition: background 0.2s, opacity 0.2s;
+    letter-spacing: 0.2px;
+}
+
+.logout-btn:hover {
+    background: rgba(236, 72, 153, 0.08);
+    opacity: 0.85;
+}
+
+/* ==================== SAVE INDICATOR ==================== */
+#save-indicator {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: linear-gradient(90deg, #c084fc, #ec4899);
+    color: white;
+    padding: 11px 22px;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    box-shadow: 0 8px 24px rgba(192, 132, 252, 0.45);
+    transform: translateY(90px);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 9999;
+    pointer-events: none;
+    letter-spacing: 0.2px;
+}
+
+#save-indicator.visible {
+    transform: translateY(0);
+}
+
+/* ==================== SYNC OVERLAY ==================== */
+#sync-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(76, 29, 149, 0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    align-items: center;
+    justify-content: center;
+    z-index: 1500;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+#sync-overlay.open {
+    display: flex;
+}
+
+#sync-overlay .spinner {
+    width: 44px;
+    height: 44px;
+    border: 3px solid rgba(255, 255, 255, 0.25);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: syncSpin 0.7s linear infinite;
+}
+
+#sync-overlay span {
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+@keyframes syncSpin {
+    to { transform: rotate(360deg); }
+}
+
+/* ==================== AUTH MODAL ==================== */
+#auth-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(76, 29, 149, 0.55);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 1rem;
+}
+
+#auth-modal.open {
+    display: flex;
+    animation: authFadeIn 0.22s ease;
+}
+
+@keyframes authFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ---- Card ---- */
+.auth-card {
+    background: #ffffff;
+    border-radius: 32px;
+    padding: 2.8rem 2.6rem 2.4rem;
+    width: 100%;
+    max-width: 440px;
+    position: relative;
+    box-shadow:
+        0 32px 64px -12px rgba(192, 132, 252, 0.3),
+        0 0 0 1px rgba(192, 132, 252, 0.1);
+    animation: authCardPop 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes authCardPop {
+    from { transform: scale(0.88) translateY(16px); opacity: 0; }
+    to   { transform: scale(1) translateY(0);       opacity: 1; }
+}
+
+/* ---- Close button ---- */
+.auth-close {
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    background: #f3e8ff;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    color: #9f7aea;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+
+.auth-close:hover {
+    background: #e0c4f7;
+    color: #6b21a8;
+    transform: scale(1.1);
+}
+
+/* ---- Logo / heading ---- */
+.auth-logo {
+    text-align: center;
+    margin-bottom: 1.8rem;
+}
+
+.auth-logo h2 {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: #4c1d95;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.35rem;
+}
+
+.auth-logo p {
+    font-size: 0.92rem;
+    color: #9f7aea;
+    line-height: 1.4;
+}
+
+/* ---- Tabs ---- */
+.auth-tabs {
+    display: flex;
+    background: #f3e8ff;
+    border-radius: 14px;
+    padding: 4px;
+    margin-bottom: 1.8rem;
+    gap: 4px;
+}
+
+.auth-tab {
+    flex: 1;
+    padding: 10px 8px;
+    border: none;
+    background: transparent;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.93rem;
+    color: #9f7aea;
+    cursor: pointer;
+    transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    letter-spacing: 0.1px;
+}
+
+.auth-tab.active {
+    background: linear-gradient(90deg, #c084fc, #ec4899);
+    color: white;
+    box-shadow: 0 4px 14px rgba(192, 132, 252, 0.4);
+}
+
+.auth-tab:not(.active):hover {
+    background: rgba(192, 132, 252, 0.12);
+    color: #6b21a8;
+}
+
+/* ---- Alerts ---- */
+.auth-error,
+.auth-success {
+    border-radius: 14px;
+    padding: 11px 16px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    margin-bottom: 1.1rem;
+    display: none;
+    line-height: 1.4;
+}
+
+.auth-error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+}
+
+.auth-success {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #15803d;
+}
+
+/* ---- Form fields (heredan del modal principal) ---- */
+/* Los .form-group, label, input[type="email"], input[type="password"]
+   ya están definidos arriba — no se repiten. Solo overrides si hacen falta. */
+
+/* ---- Submit button ---- */
+.auth-submit {
+    width: 100%;
+    background: linear-gradient(90deg, #c084fc, #ec4899);
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 16px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 24px -6px rgba(192, 132, 252, 0.5);
+    margin-top: 0.5rem;
+    letter-spacing: 0.3px;
+}
+
+.auth-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 30px -6px rgba(236, 72, 153, 0.5);
+}
+
+.auth-submit:active {
+    transform: translateY(0);
+    box-shadow: 0 6px 14px -4px rgba(192, 132, 252, 0.4);
+}
+
+.auth-submit:disabled {
+    opacity: 0.58;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ==================== AUTH RESPONSIVE MOBILE ==================== */
+@media (max-width: 480px) {
+
+    /* Modal ocupa casi toda la pantalla */
+    #auth-modal {
+        align-items: flex-end;
+        padding: 0;
+    }
+
+    .auth-card {
+        border-radius: 28px 28px 0 0;
+        padding: 2.2rem 1.6rem 2.4rem;
+        max-width: 100%;
+        /* Sube desde abajo en móvil */
+        animation: authSlideUp 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes authSlideUp {
+        from { transform: translateY(100%); opacity: 0.6; }
+        to   { transform: translateY(0);    opacity: 1; }
+    }
+
+    .auth-close {
+        top: 14px;
+        right: 16px;
+    }
+
+    .auth-logo h2 {
+        font-size: 1.3rem;
+    }
+
+    .auth-logo p {
+        font-size: 0.85rem;
+    }
+
+    .auth-tabs {
+        margin-bottom: 1.4rem;
+    }
+
+    .auth-tab {
+        font-size: 0.88rem;
+        padding: 9px 6px;
+    }
+
+    .auth-submit {
+        padding: 14px;
+        font-size: 1rem;
+    }
+
+    /* Pill y sync btn también se achican */
+    .sync-btn {
+        font-size: 0.82rem;
+        padding: 7px 16px;
+        margin-top: 0.7rem;
+    }
+
+    .user-pill {
+        font-size: 0.78rem;
+        padding: 4px 12px 4px 5px;
+        margin-top: 0.7rem;
+    }
+
+    .user-avatar {
+        width: 26px;
+        height: 26px;
+        font-size: 0.75rem;
+    }
+
+    .logout-btn {
+        font-size: 0.74rem;
+    }
+
+    #save-indicator {
+        bottom: 16px;
+        right: 16px;
+        left: 16px;
+        text-align: center;
+        font-size: 0.82rem;
+        padding: 10px 16px;
+    }
+}
+
+.form-group {
+    margin-bottom: 1.4rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: #6b21a8;
+    font-size: 1.02rem;
+    margin-bottom: 8px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 16px 20px;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: #4c1d95;
+    background: #fff;
+    border: 2px solid #e0c4f7;
+    border-radius: 18px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #c084fc;
+    box-shadow: 0 0 0 5px rgba(192, 132, 252, 0.18);
+    transform: translateY(-1px);
+}
+
+.form-group input::placeholder {
+    color: #b8a0e0;
+    opacity: 1;
+}

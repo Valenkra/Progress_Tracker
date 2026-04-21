@@ -7,27 +7,209 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="style.css">
 
+    <style>
+        /* ===== SYNC BUTTON ===== */
+        .sync-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(10px);
+            border: 1.5px solid rgba(192,132,252,0.35);
+            border-radius: 9999px;
+            padding: 7px 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #6b21a8;
+            cursor: pointer;
+            transition: all 0.25s;
+            margin-top: 0.8rem;
+        }
+        .sync-btn:hover {
+            background: #f3e8ff;
+            border-color: #c084fc;
+            transform: translateY(-1px);
+        }
+
+        /* ===== USER PILL ===== */
+        .user-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(192,132,252,0.25);
+            border-radius: 9999px;
+            padding: 6px 14px 6px 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #6b21a8;
+            margin-top: 0.8rem;
+        }
+        .user-avatar {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #c084fc, #ec4899);
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 0.8rem; font-weight: 700;
+        }
+        .logout-btn {
+            background: none; border: none;
+            color: #ec4899; font-size: 0.8rem; font-weight: 600;
+            cursor: pointer; padding: 0; margin-left: 4px;
+            transition: opacity 0.2s;
+        }
+        .logout-btn:hover { opacity: 0.7; }
+
+        /* ===== AUTH MODAL ===== */
+        #auth-modal {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(124,58,237,0.55);
+            backdrop-filter: blur(8px);
+            align-items: center; justify-content: center;
+            z-index: 2000;
+        }
+        #auth-modal.open { display: flex; }
+
+        .auth-card {
+            background: white;
+            border-radius: 28px;
+            padding: 2.5rem 2.2rem;
+            max-width: 420px; width: calc(100% - 2rem);
+            box-shadow: 0 30px 50px -10px rgba(192,132,252,0.3);
+            animation: modalPop 0.35s cubic-bezier(0.34,1.56,0.64,1);
+            position: relative;
+        }
+        .auth-logo { text-align: center; margin-bottom: 1.5rem; }
+        .auth-logo h2 { font-size: 1.4rem; color: #4c1d95; margin-bottom: 0.3rem; }
+        .auth-logo p  { font-size: 0.9rem; color: #9f7aea; }
+
+        .auth-tabs {
+            display: flex; background: #f3e8ff;
+            border-radius: 14px; padding: 4px; margin-bottom: 1.5rem; gap: 4px;
+        }
+        .auth-tab {
+            flex: 1; padding: 9px; border: none; background: transparent;
+            border-radius: 10px; font-weight: 600; font-size: 0.92rem;
+            color: #9f7aea; cursor: pointer; transition: all 0.22s;
+        }
+        .auth-tab.active {
+            background: linear-gradient(90deg, #c084fc, #ec4899);
+            color: white; box-shadow: 0 4px 12px rgba(192,132,252,0.35);
+        }
+        .auth-error {
+            background: #fef2f2; border: 1px solid #fecaca; color: #dc2626;
+            border-radius: 12px; padding: 10px 14px; font-size: 0.88rem;
+            margin-bottom: 1rem; display: none;
+        }
+        .auth-success {
+            background: #f0fdf4; border: 1px solid #bbf7d0; color: #16a34a;
+            border-radius: 12px; padding: 10px 14px; font-size: 0.88rem;
+            margin-bottom: 1rem; display: none;
+        }
+        .auth-submit {
+            width: 100%;
+            background: linear-gradient(90deg, #c084fc, #ec4899);
+            color: white; border: none; padding: 13px;
+            border-radius: 16px; font-size: 1rem; font-weight: 700;
+            cursor: pointer; transition: all 0.3s;
+            box-shadow: 0 8px 20px -5px rgba(192,132,252,0.45);
+            margin-top: 0.3rem;
+        }
+        .auth-submit:hover { transform: translateY(-2px); box-shadow: 0 14px 25px -5px rgba(236,72,153,0.45); }
+        .auth-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .auth-close {
+            position: absolute; top: 16px; right: 18px;
+            background: none; border: none; font-size: 1.4rem;
+            color: #9f7aea; cursor: pointer; line-height: 1;
+        }
+
+        /* ===== SAVE INDICATOR ===== */
+        #save-indicator {
+            position: fixed; bottom: 20px; right: 20px;
+            background: linear-gradient(90deg, #c084fc, #ec4899);
+            color: white; padding: 10px 20px; border-radius: 9999px;
+            font-size: 0.85rem; font-weight: 600;
+            box-shadow: 0 8px 20px rgba(192,132,252,0.4);
+            transform: translateY(80px);
+            transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+            z-index: 9999; pointer-events: none;
+        }
+        #save-indicator.visible { transform: translateY(0); }
+
+        /* ===== SYNC OVERLAY ===== */
+        #sync-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(124,58,237,0.45);
+            backdrop-filter: blur(6px);
+            align-items: center; justify-content: center;
+            z-index: 1500; flex-direction: column; gap: 1rem;
+            color: white; font-weight: 600; font-size: 1rem;
+        }
+        #sync-overlay.open { display: flex; }
+
+        .spinner {
+            width: 38px; height: 38px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white; border-radius: 50%;
+            animation: spin 0.75s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
 </head>
 <body>
     <div class="background"></div>
-    
+
+    <div id="save-indicator">✓ Guardado</div>
+
+    <!-- Overlay de sincronización -->
+    <div id="sync-overlay">
+        <div class="spinner"></div>
+        <span id="sync-status-text">Sincronizando con la nube...</span>
+    </div>
+
+    <!-- Modal login/registro -->
+    <div id="auth-modal">
+        <div class="auth-card">
+            <button class="auth-close" onclick="closeAuthModal()">×</button>
+            <div class="auth-logo">
+                <h2>☁️ Conectar cuenta</h2>
+                <p>Sincronizá tus guías en todos tus dispositivos</p>
+            </div>
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tab-login"    onclick="switchTab('login')">Iniciar sesión</button>
+                <button class="auth-tab"         id="tab-register" onclick="switchTab('register')">Registrarse</button>
+            </div>
+            <div id="auth-error"   class="auth-error"></div>
+            <div id="auth-success" class="auth-success"></div>
+            <div class="form-group">
+                <label for="auth-email">Email</label>
+                <input type="email" id="auth-email" placeholder="tu@email.com">
+            </div>
+            <div class="form-group" style="margin-bottom:1.2rem;">
+                <label for="auth-password">Contraseña</label>
+                <input type="password" id="auth-password" placeholder="••••••••">
+            </div>
+            <button class="auth-submit" id="auth-submit-btn" onclick="handleAuth()">Iniciar sesión</button>
+        </div>
+    </div>
+
+    <!-- ===== APP PRINCIPAL ===== -->
     <header>
         <div class="header-grid">
-            <!-- Columna 1: Izquierda (primeros 3 countdowns) -->
             <div class="header-side left-side">
                 <div id="countdowns-left" class="countdowns-container"></div>
             </div>
-
-            <!-- Columna 2: Título centrado -->
             <div class="header-center">
                 <h1>Se Aprueban los Parciales</h1>
                 <p>Trackea tus guías • Todo se guarda automáticamente</p>
+                <div id="account-area"></div>
                 <button id="add-countdown-btn" class="add-countdown-btn" style="margin-top:1rem;">
                     + Agregar Fecha de Parcial
                 </button>
             </div>
-
-            <!-- Columna 3: Derecha (overflow a partir del 4to) -->
             <div class="header-side right-side">
                 <div id="countdowns-right" class="countdowns-container"></div>
             </div>
@@ -35,10 +217,9 @@
     </header>
 
     <main class="container">
-        <!-- Card de frase motivacional -->
         <div class="quote-card" id="quote-card">
             <div class="quote-icon">✨</div>
-            <p class="quote-text" id="quote-text">Cargando frase...</p>
+            <p class="quote-text"  id="quote-text">Cargando frase...</p>
             <p class="quote-author" id="quote-author"></p>
             <button class="quote-refresh-btn" id="quote-refresh-btn" title="Nueva frase">↻</button>
         </div>
@@ -54,7 +235,6 @@
             </button>
         </div>
 
-        <!-- Barra de progreso total -->
         <div class="total-progress-card" id="total-progress-card" style="display:none;">
             <div class="total-progress-header">
                 <span class="total-progress-label">📊 Progreso Total</span>
@@ -106,7 +286,7 @@
         </div>
     </div>
 
-    <!-- Modal Nuevo Parcial -->
+    <!-- Modal Parcial -->
     <div id="exam-modal" class="modal">
         <div class="modal-content">
             <h2>📅 Nuevo Parcial</h2>
@@ -128,323 +308,523 @@
     </div>
 
     <script>
-        // ==================== MÚLTIPLES PARCIALES ====================
-        let exams = [];
-        const EXAMS_STORAGE = 'upcomingExams';
+    // ============================================================
+    //  CONSTANTES
+    // ============================================================
+    const GUIDES_KEY = 'aestheticProgressGuides';
+    const EXAMS_KEY  = 'upcomingExams';
+    const USER_KEY   = 'sap_user';
+    const SUPABASE_URL = 'https://lziimnaqourkkshfieze.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx6aWltbmFxb3Vya2tzaGZpZXplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3MjM4MDIsImV4cCI6MjA5MjI5OTgwMn0.n-sE953Ds3qYGUZBgk_doBSiYqksV8jwt9UOHN91kEQ';
 
-        function loadExams() {
-            const saved = localStorage.getItem(EXAMS_STORAGE);
-            exams = saved ? JSON.parse(saved) : [];
+    // ============================================================
+    //  ESTADO
+    // ============================================================
+    let guides         = [];
+    let exams          = [];
+    let currentFilter  = 'all';
+    let currentUser    = null;   // { email, id } cuando está conectado
+    let sb             = null;   // instancia Supabase (lazy)
+    let currentAuthTab = 'login';
+
+    // ============================================================
+    //  LOCAL STORAGE
+    // ============================================================
+    function loadLocal() {
+        guides = JSON.parse(localStorage.getItem(GUIDES_KEY) || '[]');
+        exams  = JSON.parse(localStorage.getItem(EXAMS_KEY)  || '[]');
+    }
+    function saveGuidesLocal() { localStorage.setItem(GUIDES_KEY, JSON.stringify(guides)); }
+    function saveExamsLocal()  { localStorage.setItem(EXAMS_KEY,  JSON.stringify(exams));  }
+
+    // ============================================================
+    //  SAVE INDICATOR
+    // ============================================================
+    function showSaved(cloud = false) {
+        const el = document.getElementById('save-indicator');
+        el.textContent = cloud ? '☁️ Sincronizado' : '✓ Guardado localmente';
+        el.classList.add('visible');
+        setTimeout(() => el.classList.remove('visible'), 2200);
+    }
+
+    // ============================================================
+    //  SUPABASE – carga lazy (solo cuando el usuario lo pide)
+    // ============================================================
+    function getSB() { return sb; }
+
+    async function loadSupabaseSDK() {
+        if (sb) return sb;
+        if (!document.getElementById('supabase-sdk')) {
+            await new Promise((res, rej) => {
+                const s = document.createElement('script');
+                s.id = 'supabase-sdk';
+                s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+                s.onload = res; s.onerror = rej;
+                document.head.appendChild(s);
+            });
+        }
+        sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        return sb;
+    }
+
+    // ============================================================
+    //  ACCOUNT AREA
+    // ============================================================
+    function renderAccountArea() {
+        const area = document.getElementById('account-area');
+        if (currentUser) {
+            const initial = currentUser.email[0].toUpperCase();
+            area.innerHTML = `
+                <div class="user-pill">
+                    <div class="user-avatar">${initial}</div>
+                    <span>${currentUser.email}</span>
+                    <button class="logout-btn" onclick="handleLogout()">Desconectar</button>
+                </div>`;
+        } else {
+            area.innerHTML = `
+                <button class="sync-btn" onclick="openAuthModal()">
+                    ☁️ Conectar cuenta
+                </button>`;
+        }
+    }
+
+    // ============================================================
+    //  AUTH MODAL
+    // ============================================================
+    function openAuthModal() {
+        document.getElementById('auth-modal').classList.add('open');
+    }
+    function closeAuthModal() {
+        document.getElementById('auth-modal').classList.remove('open');
+        document.getElementById('auth-error').style.display   = 'none';
+        document.getElementById('auth-success').style.display = 'none';
+    }
+    function switchTab(tab) {
+        currentAuthTab = tab;
+        document.getElementById('tab-login').classList.toggle('active',    tab === 'login');
+        document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+        document.getElementById('auth-submit-btn').textContent =
+            tab === 'login' ? 'Iniciar sesión' : 'Crear cuenta';
+        document.getElementById('auth-error').style.display   = 'none';
+        document.getElementById('auth-success').style.display = 'none';
+    }
+    function showAuthError(msg) {
+        const el = document.getElementById('auth-error');
+        el.textContent = msg; el.style.display = 'block';
+        document.getElementById('auth-success').style.display = 'none';
+    }
+    function showAuthSuccess(msg) {
+        const el = document.getElementById('auth-success');
+        el.textContent = msg; el.style.display = 'block';
+        document.getElementById('auth-error').style.display = 'none';
+    }
+
+    async function handleAuth() {
+        const email    = document.getElementById('auth-email').value.trim();
+        const password = document.getElementById('auth-password').value;
+        const btn      = document.getElementById('auth-submit-btn');
+
+        if (!email || !password) { showAuthError('Completá todos los campos.'); return; }
+        if (password.length < 6) { showAuthError('La contraseña debe tener al menos 6 caracteres.'); return; }
+
+        btn.disabled = true; btn.textContent = 'Cargando...';
+
+        try {
+            const client = await loadSupabaseSDK();
+
+            if (currentAuthTab === 'login') {
+                const { data, error } = await client.auth.signInWithPassword({ email, password });
+                if (error) throw error;
+                currentUser = { email: data.user.email, id: data.user.id };
+                localStorage.setItem(USER_KEY, JSON.stringify(currentUser));
+                closeAuthModal();
+                await syncToCloud();
+            } else {
+                const { error } = await client.auth.signUp({ email, password });
+                if (error) throw error;
+                showAuthSuccess('¡Cuenta creada! Revisá tu email para confirmar y luego iniciá sesión.');
+                btn.disabled = false; btn.textContent = 'Crear cuenta';
+                return;
+            }
+        } catch (err) {
+            const msgs = {
+                'Invalid login credentials': 'Email o contraseña incorrectos.',
+                'Email not confirmed':        'Confirmá tu email antes de iniciar sesión.',
+                'User already registered':    'Ese email ya está registrado.',
+            };
+            showAuthError(msgs[err.message] || err.message);
+            btn.disabled = false;
+            btn.textContent = currentAuthTab === 'login' ? 'Iniciar sesión' : 'Crear cuenta';
+        }
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAuthModal(); });
+    document.getElementById('auth-password').addEventListener('keydown', e => {
+        if (e.key === 'Enter') handleAuth();
+    });
+
+    // ============================================================
+    //  SYNC: localStorage → Supabase
+    //  Sube lo que solo existe localmente, luego descarga todo.
+    // ============================================================
+    async function syncToCloud() {
+        const overlay  = document.getElementById('sync-overlay');
+        const statusEl = document.getElementById('sync-status-text');
+        overlay.classList.add('open');
+
+        try {
+            // --- GUÍAS ---
+            statusEl.textContent = 'Sincronizando guías...';
+            const { data: cloudGuides } = await sb.from('guides').select('id');
+            const cloudIds = new Set((cloudGuides || []).map(g => String(g.id)));
+
+            // Guías con id numérico (creadas localmente antes de conectarse)
+            const toUpload = guides.filter(g => !cloudIds.has(String(g.id)));
+            if (toUpload.length) {
+                await sb.from('guides').insert(
+                    toUpload.map(g => ({ name: g.name, materia: g.materia,
+                        total: g.total, current: g.current, user_id: currentUser.id }))
+                );
+            }
+            const { data: finalGuides } = await sb.from('guides')
+                .select('*').order('created_at', { ascending: false });
+            guides = finalGuides || [];
+            saveGuidesLocal();
+
+            // --- EXÁMENES ---
+            statusEl.textContent = 'Sincronizando parciales...';
+            const { data: cloudExams } = await sb.from('exams').select('id');
+            const cloudExamIds = new Set((cloudExams || []).map(e => String(e.id)));
+
+            const examsToUpload = exams.filter(e => !cloudExamIds.has(String(e.id)));
+            if (examsToUpload.length) {
+                await sb.from('exams').insert(
+                    examsToUpload.map(e => ({ title: e.title, date: e.date, user_id: currentUser.id }))
+                );
+            }
+            const { data: finalExams } = await sb.from('exams')
+                .select('*').order('date', { ascending: true });
+            exams = finalExams || [];
+            saveExamsLocal();
+
+        } catch (err) {
+            console.error('Error de sincronización:', err);
+        }
+
+        overlay.classList.remove('open');
+        renderAccountArea();
+        renderGuides();
+        renderFilters();
+        renderCountDowns();
+        showSaved(true);
+    }
+
+    async function handleLogout() {
+        if (sb) await sb.auth.signOut();
+        currentUser = null;
+        localStorage.removeItem(USER_KEY);
+        renderAccountArea();
+    }
+
+    // ============================================================
+    //  CRUD GUÍAS — siempre local primero, nube si está conectado
+    // ============================================================
+    async function addGuide(guide) {
+        if (currentUser && sb) {
+            const { data, error } = await sb.from('guides')
+                .insert([{ ...guide, user_id: currentUser.id }]).select().single();
+            if (!error && data) { guides.unshift(data); saveGuidesLocal(); showSaved(true); return; }
+        }
+        guides.unshift({ id: Date.now(), ...guide });
+        saveGuidesLocal(); showSaved(false);
+    }
+
+    async function updateGuide(id, changes) {
+        const idx = guides.findIndex(g => String(g.id) === String(id));
+        if (idx !== -1) Object.assign(guides[idx], changes);
+        saveGuidesLocal();
+        if (currentUser && sb) {
+            await sb.from('guides').update(changes).eq('id', id).eq('user_id', currentUser.id);
+            showSaved(true);
+        } else { showSaved(false); }
+    }
+
+    async function deleteGuide(id) {
+        guides = guides.filter(g => String(g.id) !== String(id));
+        saveGuidesLocal();
+        if (currentUser && sb) {
+            await sb.from('guides').delete().eq('id', id).eq('user_id', currentUser.id);
+            showSaved(true);
+        } else { showSaved(false); }
+    }
+
+    // ============================================================
+    //  CRUD EXÁMENES
+    // ============================================================
+    async function addExam(exam) {
+        if (currentUser && sb) {
+            const { data, error } = await sb.from('exams')
+                .insert([{ ...exam, user_id: currentUser.id }]).select().single();
+            if (!error && data) {
+                exams.push(data);
+                exams.sort((a, b) => new Date(a.date) - new Date(b.date));
+                saveExamsLocal(); showSaved(true); return;
+            }
+        }
+        exams.push({ id: 'local_' + Date.now(), ...exam });
+        exams.sort((a, b) => new Date(a.date) - new Date(b.date));
+        saveExamsLocal(); showSaved(false);
+    }
+
+    async function deleteExam(id) {
+        exams = exams.filter(e => String(e.id) !== String(id));
+        saveExamsLocal();
+        if (currentUser && sb) {
+            await sb.from('exams').delete().eq('id', id).eq('user_id', currentUser.id);
+            showSaved(true);
+        } else { showSaved(false); }
+    }
+
+    // ============================================================
+    //  COUNTDOWNS
+    // ============================================================
+    function renderCountDowns() {
+        const left  = document.getElementById('countdowns-left');
+        const right = document.getElementById('countdowns-right');
+        left.innerHTML = right.innerHTML = '';
+
+        if (!exams.length) { left.innerHTML = `<p class="no-exams">No hay parciales</p>`; return; }
+
+        exams.forEach((exam, i) => {
+            const box = document.createElement('div');
+            box.className = 'countdown-box';
+            box.innerHTML = `
+                <div class="countdown-header">
+                    <span class="countdown-title">${exam.title}</span>
+                    <button class="delete-countdown" data-id="${exam.id}">×</button>
+                </div>
+                <div class="countdown-time" data-id="${exam.id}">
+                    <span class="days">00</span>d
+                    <span class="hours">00</span>h
+                    <span class="minutes">00</span>m
+                </div>`;
+            (i < 2 ? left : right).appendChild(box);
+        });
+    }
+
+    function startCountDowns() {
+        setInterval(() => {
+            document.querySelectorAll('.countdown-time').forEach(box => {
+                const exam = exams.find(e => String(e.id) === box.dataset.id);
+                if (!exam) return;
+                const diff = new Date(exam.date).getTime() - Date.now();
+                if (diff < 0) { box.innerHTML = `<span style="color:#ef4444">¡Ya pasó!</span>`; return; }
+                box.querySelector('.days').textContent    = String(Math.floor(diff / 86400000)).padStart(2,'0');
+                box.querySelector('.hours').textContent   = String(Math.floor((diff % 86400000) / 3600000)).padStart(2,'0');
+                box.querySelector('.minutes').textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2,'0');
+            });
+        }, 1000);
+    }
+
+    // ============================================================
+    //  GUÍAS – RENDER
+    // ============================================================
+    function calculateProgress(c, t) { return t > 0 ? Math.min(Math.floor((c / t) * 100), 100) : 0; }
+    function getUniqueMaterias()      { return [...new Set(guides.map(g => g.materia))].sort(); }
+
+    function renderFilters() {
+        const container = document.getElementById('materia-filters');
+        container.innerHTML = '';
+        getUniqueMaterias().forEach(materia => {
+            const btn = document.createElement('button');
+            btn.className = 'filter-btn'; btn.textContent = materia; btn.dataset.filter = materia;
+            btn.addEventListener('click', () => { currentFilter = materia; updateActiveFilter(); renderGuides(); });
+            container.appendChild(btn);
+        });
+    }
+
+    function updateActiveFilter() {
+        document.querySelectorAll('.filter-btn').forEach(b =>
+            b.classList.toggle('active', b.dataset.filter === currentFilter));
+    }
+
+    function renderGuides() {
+        const container = document.getElementById('guides-container');
+        const empty     = document.getElementById('empty-state');
+        container.innerHTML = '';
+
+        const filtered = currentFilter === 'all' ? guides : guides.filter(g => g.materia === currentFilter);
+        if (!filtered.length) { empty.style.display = 'flex'; renderTotalProgress(); return; }
+        empty.style.display = 'none';
+
+        filtered.forEach(guide => {
+            const progress = calculateProgress(guide.current, guide.total);
+            container.innerHTML += `
+                <div class="card" data-id="${guide.id}">
+                    <div class="card-header">
+                        <div>
+                            <span class="materia-tag">${guide.materia}</span>
+                            <h3 class="guide-name">${guide.name}</h3>
+                        </div>
+                        <button class="delete-btn" data-id="${guide.id}">🗑️</button>
+                    </div>
+                    <div class="progress-info">
+                        <span class="exercise-counter">Ejercicio <strong>${guide.current}</strong> de <strong>${guide.total}</strong></span>
+                        <span class="percentage">${progress}%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width:${progress}%"></div>
+                    </div>
+                    <div class="edit-section">
+                        <div class="input-group"><label>Total</label><input type="number" class="total-input" value="${guide.total}" data-id="${guide.id}"></div>
+                        <div class="input-group"><label>Actual</label><input type="number" class="current-input" value="${guide.current}" data-id="${guide.id}"></div>
+                        <button class="update-btn" data-id="${guide.id}">Actualizar</button>
+                    </div>
+                </div>`;
+        });
+
+        addCardListeners();
+        renderTotalProgress();
+    }
+
+    function renderTotalProgress() {
+        const card = document.getElementById('total-progress-card');
+        if (!guides.length) { card.style.display = 'none'; return; }
+        const totalEx = guides.reduce((s, g) => s + g.total, 0);
+        const doneEx  = guides.reduce((s, g) => s + g.current, 0);
+        const pct = totalEx > 0 ? Math.min(Math.round((doneEx / totalEx) * 100), 100) : 0;
+        card.style.display = 'block';
+        document.getElementById('total-progress-pct').textContent = pct + '%';
+        document.getElementById('total-progress-bar').style.width = pct + '%';
+        document.getElementById('total-progress-sub').textContent =
+            doneEx + ' de ' + totalEx + ' ejercicios completados en ' + guides.length + ' guía' + (guides.length !== 1 ? 's' : '');
+    }
+
+    function addCardListeners() {
+        document.querySelectorAll('.update-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const id      = btn.dataset.id;
+                const total   = parseInt(document.querySelector(`.total-input[data-id="${id}"]`).value)   || 1;
+                const current = Math.min(parseInt(document.querySelector(`.current-input[data-id="${id}"]`).value) || 0, total);
+                await updateGuide(id, { total, current });
+                renderGuides(); renderFilters();
+            });
+        });
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                if (confirm('¿Eliminar guía?')) { await deleteGuide(btn.dataset.id); renderGuides(); renderFilters(); }
+            });
+        });
+    }
+
+    // ============================================================
+    //  EVENT LISTENERS
+    // ============================================================
+    document.getElementById('filter-all').addEventListener('click', () => {
+        currentFilter = 'all'; updateActiveFilter(); renderGuides();
+    });
+    document.getElementById('add-countdown-btn').addEventListener('click', () => {
+        document.getElementById('exam-modal').style.display = 'flex';
+    });
+    document.getElementById('exam-form').addEventListener('submit', async e => {
+        e.preventDefault();
+        const title = document.getElementById('exam-subject').value.trim();
+        const date  = document.getElementById('exam-date').value;
+        if (title && date) {
+            await addExam({ title, date });
             renderCountDowns();
+            document.getElementById('exam-modal').style.display = 'none';
+            document.getElementById('exam-form').reset();
         }
-
-        function saveExams() {
-            localStorage.setItem(EXAMS_STORAGE, JSON.stringify(exams));
+    });
+    document.addEventListener('click', async e => {
+        if (e.target.classList.contains('delete-countdown')) {
+            if (confirm('¿Eliminar este parcial?')) { await deleteExam(e.target.dataset.id); renderCountDowns(); }
         }
+    });
 
-        function renderCountDowns() {
-            const left  = document.getElementById('countdowns-left');
-            const right = document.getElementById('countdowns-right');
-            left.innerHTML  = '';
-            right.innerHTML = '';
+    const modal = document.getElementById('modal');
+    document.getElementById('add-btn').addEventListener('click', () => {
+        document.getElementById('modal-title').textContent = 'Nueva Guía';
+        document.getElementById('guide-form').reset();
+        modal.style.display = 'flex';
+    });
+    document.getElementById('cancel-btn').addEventListener('click', () => { modal.style.display = 'none'; });
+    document.getElementById('cancel-exam-btn').addEventListener('click', () => {
+        document.getElementById('exam-modal').style.display = 'none';
+    });
+    document.getElementById('guide-form').addEventListener('submit', async e => {
+        e.preventDefault();
+        const name    = document.getElementById('guide-name').value.trim();
+        const materia = document.getElementById('materia').value.trim();
+        const total   = parseInt(document.getElementById('total-exercises').value) || 1;
+        const current = Math.min(parseInt(document.getElementById('current-exercise').value) || 0, total);
+        await addGuide({ name, materia, total, current });
+        renderGuides(); renderFilters();
+        modal.style.display = 'none';
+    });
+    window.addEventListener('click', e => {
+        if (e.target === modal) modal.style.display = 'none';
+        if (e.target === document.getElementById('exam-modal'))  document.getElementById('exam-modal').style.display = 'none';
+        if (e.target === document.getElementById('auth-modal'))  closeAuthModal();
+    });
 
-            if (exams.length === 0) {
-                left.innerHTML = `<p class="no-exams">No hay parciales</p>`;
-                return;
-            }
-
-            exams.forEach((exam, i) => {
-                const box = document.createElement('div');
-                box.className = 'countdown-box';
-                box.innerHTML = `
-                    <div class="countdown-header">
-                        <span class="countdown-title">${exam.title}</span>
-                        <button class="delete-countdown" data-index="${i}">×</button>
-                    </div>
-                    <div class="countdown-time" data-index="${i}">
-                        <span class="days">00</span>d 
-                        <span class="hours">00</span>h 
-                        <span class="minutes">00</span>m 
-                    </div>
-                `;
-                // Primeros 2 → izquierda, el resto → derecha
-                if (i < 2) {
-                    left.appendChild(box);
-                } else {
-                    right.appendChild(box);
-                }
-            });
-        }
-
-        function startCountDowns() {
-            setInterval(() => {
-                document.querySelectorAll('.countdown-time').forEach(timeBox => {
-                    const index = parseInt(timeBox.dataset.index);
-                    const exam = exams[index];
-                    if (!exam) return;
-
-                    const diff = new Date(exam.date).getTime() - Date.now();
-
-                    if (diff < 0) {
-                        timeBox.innerHTML = `<span style="color:#ef4444">¡Ya pasó!</span>`;
-                        return;
-                    }
-
-                    const d = Math.floor(diff / 86400000);
-                    const h = Math.floor((diff % 86400000) / 3600000);
-                    const m = Math.floor((diff % 3600000) / 60000);
-                    const s = Math.floor((diff % 60000) / 1000);
-
-                    timeBox.querySelector('.days').textContent = String(d).padStart(2, '0');
-                    timeBox.querySelector('.hours').textContent = String(h).padStart(2, '0');
-                    timeBox.querySelector('.minutes').textContent = String(m).padStart(2, '0');
-                });
-            }, 1000);
-        }
-
-        // ==================== GUÍAS (código anterior) ====================
-        let guides = [];
-        const STORAGE_KEY = 'aestheticProgressGuides';
-        let currentFilter = 'all';
-
-        function loadGuides() {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            guides = saved ? JSON.parse(saved) : [];
-            renderGuides();
-            renderFilters();
-        }
-
-        function saveGuides() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(guides));
-        }
-
-        function calculateProgress(current, total) {
-            return total > 0 ? Math.min(Math.floor((current / total) * 100), 100) : 0;
-        }
-
-        function getUniqueMaterias() {
-            return [...new Set(guides.map(g => g.materia))].sort();
-        }
-
-        function renderFilters() {
-            const container = document.getElementById('materia-filters');
-            container.innerHTML = '';
-            getUniqueMaterias().forEach(materia => {
-                const btn = document.createElement('button');
-                btn.className = 'filter-btn';
-                btn.textContent = materia;
-                btn.dataset.filter = materia;
-                btn.addEventListener('click', () => {
-                    currentFilter = materia;
-                    updateActiveFilter();
-                    renderGuides();
-                });
-                container.appendChild(btn);
-            });
-        }
-
-        function updateActiveFilter() {
-            document.querySelectorAll('.filter-btn').forEach(btn => 
-                btn.classList.toggle('active', btn.dataset.filter === currentFilter)
-            );
-        }
-
-        function renderGuides() {
-            const container = document.getElementById('guides-container');
-            const empty = document.getElementById('empty-state');
-            container.innerHTML = '';
-
-            const filtered = currentFilter === 'all' ? guides : guides.filter(g => g.materia === currentFilter);
-
-            if (filtered.length === 0) {
-                empty.style.display = 'flex';
-                return;
-            }
-            empty.style.display = 'none';
-
-            filtered.forEach(guide => {
-                const index = guides.findIndex(g => g.id === guide.id);
-                const progress = calculateProgress(guide.current, guide.total);
-
-                container.innerHTML += `
-                    <div class="card" data-index="${index}">
-                        <div class="card-header">
-                            <div>
-                                <span class="materia-tag">${guide.materia}</span>
-                                <h3 class="guide-name">${guide.name}</h3>
-                            </div>
-                            <button class="delete-btn" data-index="${index}">🗑️</button>
-                        </div>
-                        <div class="progress-info">
-                            <span class="exercise-counter">Ejercicio <strong>${guide.current}</strong> de <strong>${guide.total}</strong></span>
-                            <span class="percentage">${progress}%</span>
-                        </div>
-                        <div class="progress-bar-container">
-                            <div class="progress-bar" style="width: ${progress}%"></div>
-                        </div>
-                        <div class="edit-section">
-                            <div class="input-group"><label>Total</label><input type="number" class="total-input" value="${guide.total}" data-index="${index}"></div>
-                            <div class="input-group"><label>Actual</label><input type="number" class="current-input" value="${guide.current}" data-index="${index}"></div>
-                            <button class="update-btn" data-index="${index}">Actualizar</button>
-                        </div>
-                    </div>
-                `;
-            });
-
-            addCardListeners();
-            renderTotalProgress();
-        }
-
-        function renderTotalProgress() {
-            const card = document.getElementById('total-progress-card');
-            if (!guides.length) { card.style.display = 'none'; return; }
-            const totalEx = guides.reduce((s, g) => s + g.total, 0);
-            const doneEx  = guides.reduce((s, g) => s + g.current, 0);
-            const pct = totalEx > 0 ? Math.min(Math.round((doneEx / totalEx) * 100), 100) : 0;
-            card.style.display = 'block';
-            document.getElementById('total-progress-pct').textContent = pct + '%';
-            document.getElementById('total-progress-bar').style.width = pct + '%';
-            document.getElementById('total-progress-sub').textContent =
-                doneEx + ' de ' + totalEx + ' ejercicios completados en ' + guides.length + ' guía' + (guides.length !== 1 ? 's' : '');
-        }
-
-        function addCardListeners() {
-            // actualizar y eliminar (código anterior)
-            document.querySelectorAll('.update-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const i = parseInt(btn.dataset.index);
-                    guides[i].total = parseInt(document.querySelector(`.total-input[data-index="${i}"]`).value) || 1;
-                    guides[i].current = Math.min(parseInt(document.querySelector(`.current-input[data-index="${i}"]`).value) || 0, guides[i].total);
-                    saveGuides();
-                    renderGuides();
-                    renderFilters();
-                });
-            });
-
-            document.querySelectorAll('.delete-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    if (confirm('¿Eliminar guía?')) {
-                        guides.splice(parseInt(btn.dataset.index), 1);
-                        saveGuides();
-                        renderGuides();
-                        renderFilters();
-                    }
-                });
-            });
-        }
-
-        // ==================== INIT ====================
-        function init() {
-            loadGuides();
-            loadExams();
-            startCountDowns();
-
-            // Agregar parcial
-            document.getElementById('add-countdown-btn').addEventListener('click', () => {
-                document.getElementById('exam-modal').style.display = 'flex';
-            });
-
-            // Guardar parcial
-            document.getElementById('exam-form').addEventListener('submit', e => {
-                e.preventDefault();
-                const title = document.getElementById('exam-subject').value.trim();
-                const date = document.getElementById('exam-date').value;
-                if (title && date) {
-                    exams.push({title, date});
-                    saveExams();
-                    renderCountDowns();
-                    document.getElementById('exam-modal').style.display = 'none';
-                }
-            });
-
-            // Eliminar parcial
-            document.addEventListener('click', e => {
-                if (e.target.classList.contains('delete-countdown')) {
-                    if (confirm('¿Eliminar este parcial?')) {
-                        exams.splice(parseInt(e.target.dataset.index), 1);
-                        saveExams();
-                        renderCountDowns();
-                    }
-                }
-            });
-
-            // Botón "Todas"
-            document.getElementById('filter-all').addEventListener('click', () => {
-                currentFilter = 'all';
-                updateActiveFilter();
-                renderGuides();
-            });
-
-            // Modal de guías
-            const addBtn = document.getElementById('add-btn');
-            const modal = document.getElementById('modal');
-
-            addBtn.addEventListener('click', () => {
-                document.getElementById('modal-title').textContent = 'Nueva Guía';
-                document.getElementById('guide-form').reset();
-                modal.style.display = 'flex';
-            });
-
-            document.getElementById('cancel-btn').addEventListener('click', () => {
-                modal.style.display = 'none';
-            });
-
-            document.getElementById('cancel-exam-btn').addEventListener('click', () => {
-                document.getElementById('exam-modal').style.display = 'none';
-            });
-
-            document.getElementById('guide-form').addEventListener('submit', e => {
-                e.preventDefault();
-                const name = document.getElementById('guide-name').value.trim();
-                const materia = document.getElementById('materia').value.trim();
-                const total = parseInt(document.getElementById('total-exercises').value) || 1;
-                const current = Math.min(parseInt(document.getElementById('current-exercise').value) || 0, total);
-                guides.push({ id: Date.now(), name, materia, total, current });
-                saveGuides();
-                renderGuides();
-                renderFilters();
-                modal.style.display = 'none';
-            });
-
-            // Cerrar modales al hacer click fuera
-            window.addEventListener('click', e => {
-                if (e.target === modal) modal.style.display = 'none';
-                if (e.target === document.getElementById('exam-modal')) document.getElementById('exam-modal').style.display = 'none';
-            });
-        }
-
-        // ==================== FRASE MOTIVACIONAL ====================
-        async function fetchQuote() {
-            const textEl = document.getElementById('quote-text');
-            const authorEl = document.getElementById('quote-author');
-            const btn = document.getElementById('quote-refresh-btn');
-
-            btn.classList.add('spinning');
-            textEl.style.opacity = '0';
-            authorEl.style.opacity = '0';
-
-            try {
-                const res = await fetch('https://thequoteshub.com/api/');
-                const data = await res.json();
-                setTimeout(() => {
-                    textEl.textContent = `"${data.text}"`;
-                    authorEl.textContent = `— ${data.author}`;
-                    textEl.style.opacity = '1';
-                    authorEl.style.opacity = '1';
-                    btn.classList.remove('spinning');
-                }, 300);
-            } catch {
-                textEl.textContent = 'No se pudo cargar la frase 🌸';
-                textEl.style.opacity = '1';
+    // ============================================================
+    //  FRASE MOTIVACIONAL
+    // ============================================================
+    async function fetchQuote() {
+        const textEl = document.getElementById('quote-text');
+        const authEl = document.getElementById('quote-author');
+        const btn    = document.getElementById('quote-refresh-btn');
+        btn.classList.add('spinning');
+        textEl.style.opacity = authEl.style.opacity = '0';
+        try {
+            const data = await (await fetch('https://thequoteshub.com/api/')).json();
+            setTimeout(() => {
+                textEl.textContent = `"${data.text}"`;
+                authEl.textContent = `— ${data.author}`;
+                textEl.style.opacity = authEl.style.opacity = '1';
                 btn.classList.remove('spinning');
-            }
+            }, 300);
+        } catch {
+            textEl.textContent   = 'No se pudo cargar la frase 🌸';
+            textEl.style.opacity = '1';
+            btn.classList.remove('spinning');
+        }
+    }
+
+    // ============================================================
+    //  INIT — 100% síncrono, sin esperar ninguna red
+    // ============================================================
+    (function init() {
+        loadLocal();                // lee localStorage al instante
+
+        // Restaurar sesión guardada sin llamar a Supabase
+        const savedUser = localStorage.getItem(USER_KEY);
+        if (savedUser) {
+            currentUser = JSON.parse(savedUser);
+            // Verificar que el token siga vigente EN SEGUNDO PLANO (no bloquea la UI)
+            setTimeout(async () => {
+                try {
+                    const client = await loadSupabaseSDK();
+                    const { data: { session } } = await client.auth.getSession();
+                    if (!session) {
+                        currentUser = null;
+                        localStorage.removeItem(USER_KEY);
+                        renderAccountArea();
+                    }
+                } catch { /* silencioso */ }
+            }, 0);
         }
 
-        window.onload = () => {
-            init();
-            fetchQuote();
-            document.getElementById('quote-refresh-btn').addEventListener('click', fetchQuote);
-        };
+        renderAccountArea();
+        renderGuides();
+        renderFilters();
+        renderCountDowns();
+        startCountDowns();
+        fetchQuote();
+        document.getElementById('quote-refresh-btn').addEventListener('click', fetchQuote);
+    })();
     </script>
 </body>
 </html>
