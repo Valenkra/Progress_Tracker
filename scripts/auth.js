@@ -72,7 +72,9 @@ async function handleAuth() {
             await syncToCloud();
             subscribeToRealtime();
         } else {
-            const { error } = await client.auth.signUp({ email, password });
+            const { error } = await client.auth.signUp({ email, password, options: {
+    // This MUST exactly match an entry in your Supabase Redirect URLs
+    redirectTo: 'https://valenkra.github.io/Progress_Tracker/'} });
             if (error) throw error;
             showAuthSuccess('¡Cuenta creada! Revisá tu email para confirmar y luego iniciá sesión.');
             btn.disabled = false; btn.textContent = 'Crear cuenta';
