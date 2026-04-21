@@ -1557,4 +1557,8 @@ input:focus {
         top: 16px;
         right: 16px;
     }
+
+    .header {
+        padding: 0;
+    }
 }
