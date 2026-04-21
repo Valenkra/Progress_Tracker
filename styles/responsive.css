@@ -83,6 +83,11 @@
         font-size: 0.85rem;
     }
 
+    .parrafito {
+        width: 80%;
+        align-self: anchor-center;
+    }
+
     /* Countdowns */
     .header-side.left-side,
     .header-side.right-side {

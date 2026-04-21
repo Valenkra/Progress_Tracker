@@ -31,6 +31,11 @@ header p {
     font-weight: 500;
 }
 
+.parrafito {
+    font-size: .85rem;
+    margin-top: 1rem;
+}
+
 /* ==================== HEADER GRID ==================== */
 .header-grid {
     display: grid;
