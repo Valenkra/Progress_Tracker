@@ -1561,4 +1561,8 @@ input:focus {
     .header {
         padding: 0;
     }
+
+    .header-center {
+        width: inherit;
+    }
 }
