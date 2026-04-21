@@ -1582,3 +1582,18 @@ input:focus {
 #exam-form {
     margin-top: 1rem;
 }
+
+/* footer */
+.app-footer {
+    width: 100%;
+    background: #e551a7; /* violeta sólido */
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.app-footer p {
+    margin: 0;
+}
