@@ -893,7 +893,7 @@
     // ============================================================
     async function loadFrases() {
         try {
-            const res = await fetch('./frases.json');
+            const res = await fetch('frases.json');
             frases = await res.json();
             console.log('Frases cargadas:', frases.length);
         } catch (err) {
