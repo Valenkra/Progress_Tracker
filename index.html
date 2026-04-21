@@ -503,18 +503,7 @@
 
             // --- EXÁMENES ---
             statusEl.textContent = 'Sincronizando parciales...';
-            const { data: cloudExams } = await sb
-                .from('exams')
-                .select('id')
-                .eq('user_id', currentUser.id);
-            const cloudExamIds = new Set((cloudExams || []).map(e => String(e.id)));
-
-            const examsToUpload = exams.filter(e => !cloudExamIds.has(String(e.id)));
-            if (examsToUpload.length) {
-                await sb.from('exams').insert(
-                    examsToUpload.map(e => ({ title: e.title, date: e.date, user_id: currentUser.id }))
-                );
-            }
+            
             const { data: finalExams } = await sb
                 .from('exams')
                 .select('*')
@@ -674,16 +663,27 @@
     async function addExam(exam) {
         if (currentUser && sb) {
             const { data, error } = await sb.from('exams')
-                .insert([{ ...exam, user_id: currentUser.id }]).select().single();
+                .insert([{ ...exam, user_id: currentUser.id }])
+                .select()
+                .single();
+
             if (!error && data) {
+                exams.push(data); // ✅ agregar al estado
+                exams.sort((a, b) => new Date(a.date) - new Date(b.date));
+                saveExamsLocal();
+                renderCountDowns(); // ✅ render inmediato
+                showSaved(true);
                 return;
             }
         }
+
+        // fallback local
         exams.push({ id: 'local_' + Date.now(), ...exam });
         exams.sort((a, b) => new Date(a.date) - new Date(b.date));
-        saveExamsLocal(); showSaved(false);
+        saveExamsLocal();
+        renderCountDowns(); // ✅ también acá
+        showSaved(false);
     }
-
     async function deleteExam(id) {
         exams = exams.filter(e => String(e.id) !== String(id));
         saveExamsLocal();
